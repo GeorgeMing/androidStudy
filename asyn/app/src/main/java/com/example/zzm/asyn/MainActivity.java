@@ -6,14 +6,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
+    private ProgressBar progressBar;
+    private TextView textView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TextView textView = (TextView)findViewById(R.id.text);
-        Aysntest aysntest = new Aysntest(textView);
-        aysntest.execute("http://zzmyun.space/160722/index.php/appadmin/orderadmin/");
-
+        textView = (TextView) findViewById(R.id.text1);
+        progressBar = (ProgressBar)findViewById(R.id.progressBar02);
+        asyntest asyntestObj = new asyntest(textView, progressBar);
+        asyntestObj.execute();
     }
 }

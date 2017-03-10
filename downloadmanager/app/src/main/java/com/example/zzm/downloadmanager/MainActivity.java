@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
 // Ok go!
         DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-        long downloadId = dm.enqueue(req);
+//        long downloadId =
+                dm.enqueue(req);
     }
 }
