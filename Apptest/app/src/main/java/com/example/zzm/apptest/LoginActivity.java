@@ -12,13 +12,17 @@ import android.widget.EditText;
  * Created by zzm on 2017/3/13.
  */
 
+class ServerInfo {
+    static String ServerAddr = "http://192.168.249.238/";
+}
+
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText usernameText,passwordText;
     private Button submitBtu;
     Context context;
     Intent intent;
-    static String URLstr = "http://192.168.249.238/tp/admin/index/login";
+    static String URLstr = ServerInfo.ServerAddr + "tp/admin/index/login";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +38,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.loginBtu:
                 context = LoginActivity.this;
                 intent = new Intent(LoginActivity.this, MainActivity.class);
-                Myinfo myinfo = new Myinfo(context, intent);
+                LoginService myinfo = new LoginService(context, intent);
                 myinfo.execute(URLstr+"?username="+usernameText.getText()+"&password="+passwordText.getText());
                // System.out.println(URLstr+"?"+usernameText.getText()+"&"+passwordText.getText());
                 break;

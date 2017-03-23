@@ -16,11 +16,11 @@ import java.util.TooManyListenersException;
  * Created by zzm on 2017/3/10.
  */
 
-public class Myinfo extends AsyncTask<String, Integer, String> {
+public class LoginService extends AsyncTask<String, Integer, String> {
 
     private Context context;
     private Intent intent;
-    public Myinfo(Context context, Intent intent){
+    public LoginService(Context context, Intent intent){
         this.context = context;
         this.intent = intent;
     }
