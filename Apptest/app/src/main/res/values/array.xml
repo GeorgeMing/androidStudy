@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="school">
+        <item>计算机学院</item>
+
+    </string-array>
+    <string-array name="major">
+        <item>计算机科学与技术</item>
+        <item>软件工程</item>
+        <item>网络工程</item>
+        <item>数字媒体技术</item>
+    </string-array>
+
+    <string-array name="year">
+        <item>2016</item>
+        <item>2015</item>
+        <item>2014</item>
+        <item>2013</item>
+    </string-array>
+
+    <string-array name="classNum">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+</resources>
