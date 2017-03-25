@@ -1,17 +1,20 @@
 package com.example.zzm.apptest;
 
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -26,6 +29,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView personalImg,scheduleImg,homeworkImg,dataImg;
     private LinearLayout personalLayout, scheduleLayout, homeworkLayout, dataLayout;
     private WebView webview;
+
+    private int shap[] = new int[]{R.drawable.shape,R.drawable.shape2,R.drawable.shape3,R.drawable.shape4,R.drawable.shape5};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case 2:
                 homeworkText.setTextColor(Color.parseColor("#000000"));
                 homeworkImg.setImageResource(R.drawable.ic_tab_black);
+                showView3();
                 break;
             case 3:
                 dataText.setTextColor(Color.parseColor("#000000"));
@@ -180,6 +186,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 homeworkText.setTextColor(Color.parseColor("#000000"));
                 homeworkImg.setImageResource(R.drawable.ic_tab_black);
                 viewPager.setCurrentItem(2);
+                showView3();
                 break;
             case R.id.dataLayout:
                 dataText.setTextColor(Color.parseColor("#000000"));
@@ -192,6 +199,49 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onPageScrollStateChanged(int state) {
+
+    }
+
+    //view3显示函数
+    public void showView3(){
+        ListView list = (ListView)findViewById(R.id.view3list);
+        BaseAdapter adapter = new BaseAdapter() {
+            @Override
+            public int getCount() {
+                return 10;
+            }
+
+            @Override
+            public Object getItem(int i) {
+                return null;
+            }
+
+            @Override
+            public long getItemId(int i) {
+                return i;
+            }
+
+            @Override
+            public View getView(int i, View view, ViewGroup viewGroup) {
+                LinearLayout linearLayout = new LinearLayout(MainActivity.this);
+                linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+                Button bn = new Button(MainActivity.this);
+                bn.setText("test\ntest2");
+                bn.setTextColor(0xffffffff);
+                bn.setTextSize(25);
+                bn.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 400));
+
+                bn.setBackgroundResource(shap[i%5]);
+
+                linearLayout.addView(bn);
+                return linearLayout;
+            }
+        };
+        list.setAdapter(adapter);
+    }
+
+    //view4显示函数
+    public void showView4(){
 
     }
 }

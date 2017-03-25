@@ -13,7 +13,7 @@ import android.widget.EditText;
  */
 
 class ServerInfo {
-    static String ServerAddr = "http://192.168.249.238/";
+    static String ServerAddr = "http://zzmyun.space/";
 }
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -38,8 +38,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.loginBtu:
                 context = LoginActivity.this;
                 intent = new Intent(LoginActivity.this, MainActivity.class);
-                LoginService myinfo = new LoginService(context, intent);
-                myinfo.execute(URLstr+"?username="+usernameText.getText()+"&password="+passwordText.getText());
+                this.startActivity(intent);
+//                LoginService myinfo = new LoginService(context, intent);
+//                myinfo.execute(URLstr+"?username="+usernameText.getText()+"&password="+passwordText.getText());
                // System.out.println(URLstr+"?"+usernameText.getText()+"&"+passwordText.getText());
                 break;
         }
