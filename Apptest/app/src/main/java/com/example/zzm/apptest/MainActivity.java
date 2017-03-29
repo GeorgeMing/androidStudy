@@ -1,5 +1,7 @@
 package com.example.zzm.apptest;
 
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -98,8 +101,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public Object instantiateItem(ViewGroup container, int position) {
                 // TODO Auto-generated method stub
                 container.addView(viewList.get(position));
-
-
                 return viewList.get(position);
             }
         };
@@ -113,7 +114,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         dataLayout.setOnClickListener(this);
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(this);
+        DatabaseHelper databaseHelper = new DatabaseHelper(MainActivity.this, "user_db");
+        SQLiteDatabase sqLiteDatabase = databaseHelper.getReadableDatabase();
 
+        showView1();
     }
 
 
@@ -217,6 +221,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 viewPager.setCurrentItem(3);
                 showView4();
                 break;
+
         }
     }
 
@@ -226,7 +231,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    public boolean checkLogin(){
+        return true;
+    }
+
+    //view1显示函数
     public void showView1() {
+        Button loginoutbtn = (Button)view1.findViewById(R.id.loginout);
+        loginoutbtn.setOnClickListener(new View.OnClickListener() {//注销登录
+            @Override
+            public void onClick(View view) {
+                DataBaseController db = new DataBaseController(MainActivity.this);
+                db.delectData();
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                MainActivity.this.startActivity(intent);
+            }
+        });
         GetData gd = new GetData(MainActivity.this, getWindow().getDecorView());
         gd.execute("");
     }

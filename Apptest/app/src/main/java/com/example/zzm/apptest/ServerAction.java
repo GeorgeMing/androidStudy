@@ -1,9 +1,13 @@
 package com.example.zzm.apptest;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.DataSetObserver;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -26,8 +30,9 @@ import java.net.URL;
  * Created by zzm on 2017/3/10.
  */
 
+//服务器地址
 public class ServerAction {
-    static String ServerAddr = "http://zzmyun.space/";
+    static String ServerAddr = "http://192.168.249.77/";
 }
 
 //注册方法
@@ -41,6 +46,73 @@ class RegisterService extends AsyncTask<String, Integer, String> {
     @Override
     protected void onPostExecute(String str) {
         super.onPostExecute(str);
+    }
+}
+
+
+//操作sqlite数据库
+class DataBaseController{
+    Context context;
+
+    public DataBaseController(Context context){
+        this.context = context;
+    }
+
+    public void delectData(){
+        /*数据删除*/
+        //获得可写的SQLiteDatabase对象
+        // 创建DatabaseHelper对象
+
+        DatabaseHelper databaseHelper = new DatabaseHelper(context, "user_db");
+        SQLiteDatabase sqLiteDatabase = databaseHelper.getWritableDatabase();
+        // 得到一个可写的SQLiteDatabase对象
+        sqLiteDatabase = databaseHelper.getWritableDatabase();
+        //调用SQLiteDatabase对象的delete方法进行删除操作
+        //第一个参数String：表名
+        //第二个参数String：条件语句
+        //第三个参数String[]：条件值
+        sqLiteDatabase.delete("user", "id=?", new String[]{"1"});
+    }
+
+    //把token写进sqlite数据库
+    public void writeToken(String token, String idNumber){
+        Log.d("writeToke", token);
+        ContentValues values = new ContentValues();
+        // 向该对象中插入键值对，其中键是列名，值是希望插入到这一列的值，值必须和数据库当中的数据类型一致
+        values.put("id", 1);
+        values.put("idNumber", idNumber);
+        values.put("token", token);
+        DatabaseHelper databaseHelper = new DatabaseHelper(context, "user_db");
+        SQLiteDatabase sqLiteDatabase = databaseHelper.getWritableDatabase();
+        // 创建ContentValues对象
+
+        sqLiteDatabase.insert("user", null, values);
+    }
+
+    public String readToken(){
+        String token = "";
+        DatabaseHelper databaseHelper = new DatabaseHelper(context, "user_db");
+        SQLiteDatabase sqLiteDatabase = databaseHelper.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.query("user", new String[] { "id", "idNumber","token" }, "id=?", new String[] { "1" }, null, null, null);
+        System.out.println(token);
+        while (cursor.moveToNext()) {
+
+            token = cursor.getString(cursor.getColumnIndex("token"));
+        }
+        return token;
+    }
+
+    public String readidNumber(){
+        String idNumber = "";
+        DatabaseHelper databaseHelper = new DatabaseHelper(context, "user_db");
+        SQLiteDatabase sqLiteDatabase = databaseHelper.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.query("user", new String[] { "id", "idNumber","token" }, "id=?", new String[] { "1" }, null, null, null);
+
+        while (cursor.moveToNext()) {
+
+            idNumber = cursor.getString(cursor.getColumnIndex("idNumber"));
+        }
+        return idNumber;
     }
 }
 
@@ -72,6 +144,7 @@ class LoginService extends AsyncTask<String, Integer, String> {
             }
         }catch (Exception e){
             publishProgress(-1);
+            return null;
         }
         return null;
     }
@@ -84,11 +157,22 @@ class LoginService extends AsyncTask<String, Integer, String> {
     @Override
     protected void onPostExecute(String str) {
         super.onPostExecute(str);
+
         if(str!=null){
             try{
                 JSONObject jsonObject = new JSONObject(String.valueOf(str));
                 String resStr = jsonObject.getString("status");
+
+
                 if(resStr.equals("scusses")){
+                    String token = jsonObject.getString("token");
+                    String idNumber = jsonObject.getString("idNumber");
+                    /*
+                    * 登录成功把token写进sqlite
+                    * */
+
+                    DataBaseController db = new DataBaseController(context);
+                    db.writeToken(token, idNumber);
                     context.startActivity(intent);
                 }else{
                     Toast.makeText(context, "用户名或密码错误", Toast.LENGTH_SHORT).show();
@@ -97,6 +181,8 @@ class LoginService extends AsyncTask<String, Integer, String> {
                 Toast.makeText(context, "服务器错误", Toast.LENGTH_SHORT).show();
             }
 
+        }else{
+            Toast.makeText(context, "服务器错误", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -108,11 +194,11 @@ class LoginService extends AsyncTask<String, Integer, String> {
     }
 }
 
-//View1拿用户信息
+//**************************View1拿用户信息*****************************//
 class GetData extends AsyncTask<String, Void, String> {
     private Context context;
     private View view;
-
+    private String token, idNumber;
     public GetData(Context context, View view){
         this.context = context;
         this.view = view;
@@ -122,7 +208,10 @@ class GetData extends AsyncTask<String, Void, String> {
     protected String doInBackground(String... strings) {
         HttpURLConnection httpURLConnection;
         try{
-            URL url = new URL(strings[0]);
+            this.token = new DataBaseController(context).readToken();
+            this.idNumber = new DataBaseController(context).readidNumber();
+            Log.d("#######token", token);
+            URL url = new URL(ServerAction.ServerAddr+"tp/index.php/admin/Index/getInfo?idNumber="+idNumber+"&token="+token);
             httpURLConnection = (HttpURLConnection)url.openConnection();
             if(httpURLConnection.getResponseCode() == 200){
                 InputStream is = httpURLConnection.getInputStream();
@@ -132,6 +221,7 @@ class GetData extends AsyncTask<String, Void, String> {
                     str += new String(buffer);
                     buffer = new byte[1024];
                 }
+                Log.d("res",str);
                 return str;
             }
         }catch (Exception e){
@@ -147,15 +237,29 @@ class GetData extends AsyncTask<String, Void, String> {
         if(str!=null){
             try{
                 JSONObject jsonObject = new JSONObject(String.valueOf(str));
-                String resStr = jsonObject.getString("status");
+                String student_name = jsonObject.getString("student_name");
+                String student_college = jsonObject.getString("student_college");
+                String student_specialty = jsonObject.getString("student_specialty");
+                String student_grade = jsonObject.getString("student_grade");
+                String student_class = jsonObject.getString("student_class");
+                String student_number = jsonObject.getString("student_number");
+                TextView nameText = (TextView)view.findViewById(R.id.name);
+                TextView collegeText = (TextView)view.findViewById(R.id.college);
+                TextView specialtyText = (TextView)view.findViewById(R.id.specialty);
+                TextView gradeText = (TextView)view.findViewById(R.id.grade);
+                TextView classnumText = (TextView)view.findViewById(R.id.classnum);
+                TextView numberText = (TextView)view.findViewById(R.id.number);
+                nameText.setText(student_name);
+                collegeText.setText(student_college);
+                specialtyText.setText(student_specialty);
+                gradeText.setText(student_grade);
+                classnumText.setText(student_class);
+                numberText.setText(student_number);
 
-                if(resStr.equals("scusses")){
-
-                }else{
-                    Toast.makeText(context, "用户名或密码错误", Toast.LENGTH_SHORT).show();
-                }
             }catch (Exception e){
-                Toast.makeText(context, "服务器错误", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "未登录", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context,LoginActivity.class);
+                context.startActivity(intent);
             }
 
         }
@@ -163,7 +267,7 @@ class GetData extends AsyncTask<String, Void, String> {
 }
 
 
-//View3拿到作业信息
+//**************************View3拿作业信息*****************************//
 class GetHomeworkData extends AsyncTask<String, Void, String>{
     Context context;
     View view;
@@ -217,7 +321,7 @@ class GetHomeworkData extends AsyncTask<String, Void, String>{
     }
 }
 
-//View4拿文件信息
+//**************************View4拿文件信息*****************************//
 class GetFileData extends AsyncTask<String, Void, String> {
     Context context;
     View view;

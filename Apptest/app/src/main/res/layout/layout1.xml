@@ -59,13 +59,14 @@
                 android:text="姓名"
                 android:layout_weight="1"/>
             <TextView
+                android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="15dp"
                 android:textSize="20dp"
-                android:text="李白"/>
+                android:text=""/>
 
         </RelativeLayout>
 
@@ -91,13 +92,14 @@
                 android:layout_weight="1"/>
 
             <TextView
+                android:id="@+id/college"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="15dp"
                 android:textSize="20dp"
-                android:text="计算机学院"/>
+                android:text=""/>
 
         </RelativeLayout>
 
@@ -114,6 +116,7 @@
             android:textSize="20dp"
             android:layout_weight="1">
             <TextView
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -123,13 +126,14 @@
                 android:layout_weight="1"/>
 
             <TextView
+                android:id="@+id/specialty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="15dp"
                 android:textSize="20dp"
-                android:text="计算机科学与技术"/>
+                android:text=""/>
 
         </RelativeLayout>
 
@@ -152,13 +156,14 @@
                 android:layout_weight="1"/>
 
             <TextView
+                android:id="@+id/grade"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="15dp"
                 android:textSize="20dp"
-                android:text="13级"/>
+                android:text=""/>
 
         </RelativeLayout>
 
@@ -181,13 +186,14 @@
                 android:layout_weight="1"/>
 
             <TextView
+                android:id="@+id/classnum"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="15dp"
                 android:textSize="20dp"
-                android:text="计算机科学与技术1班"/>
+                android:text=""/>
 
         </RelativeLayout>
 
@@ -210,13 +216,14 @@
                 android:layout_weight="1"/>
 
             <TextView
+                android:id="@+id/number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="15dp"
                 android:textSize="20dp"
-                android:text="130201011022"/>
+                android:text=""/>
 
         </RelativeLayout>
 
@@ -238,6 +245,7 @@
                 android:layout_weight="1"/>
 
             <Button
+                android:id="@+id/loginout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/loginout"

@@ -21,7 +21,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TextView forgetPasswordBtn, registerBtn;
     Context context;
     Intent intent;
-    static String URLstr = ServerAction.ServerAddr + "tp/admin/index/login";
+    static String URLstr = ServerAction.ServerAddr + "tp/index.php/admin/index/login";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,9 +41,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.loginBtu:
                 context = LoginActivity.this;
                 intent = new Intent(LoginActivity.this, MainActivity.class);
-                this.startActivity(intent);
                 LoginService myinfo = new LoginService(context, intent);
-                myinfo.execute(URLstr+"?username="+usernameText.getText()+"&password="+passwordText.getText());
+                myinfo.execute(URLstr+"?username="+usernameText.getText().toString()+"&password="+passwordText.getText().toString());
+                System.out.println(URLstr+"?username="+usernameText.getText()+"&password="+passwordText.getText());
                 break;
             case R.id.forgetPassworBtn:
                 Toast.makeText(this ,"请联系管理员", Toast.LENGTH_SHORT).show();
