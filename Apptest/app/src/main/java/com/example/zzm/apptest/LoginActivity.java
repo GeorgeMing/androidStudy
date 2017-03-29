@@ -14,10 +14,6 @@ import android.widget.Toast;
  * Created by zzm on 2017/3/13.
  */
 
-class ServerInfo {
-    static String ServerAddr = "http://zzmyun.space/";
-}
-
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText usernameText,passwordText;
@@ -25,7 +21,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TextView forgetPasswordBtn, registerBtn;
     Context context;
     Intent intent;
-    static String URLstr = ServerInfo.ServerAddr + "tp/admin/index/login";
+    static String URLstr = ServerAction.ServerAddr + "tp/admin/index/login";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,9 +42,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 context = LoginActivity.this;
                 intent = new Intent(LoginActivity.this, MainActivity.class);
                 this.startActivity(intent);
-//                LoginService myinfo = new LoginService(context, intent);
-//                myinfo.execute(URLstr+"?username="+usernameText.getText()+"&password="+passwordText.getText());
-               // System.out.println(URLstr+"?"+usernameText.getText()+"&"+passwordText.getText());
+                LoginService myinfo = new LoginService(context, intent);
+                myinfo.execute(URLstr+"?username="+usernameText.getText()+"&password="+passwordText.getText());
                 break;
             case R.id.forgetPassworBtn:
                 Toast.makeText(this ,"请联系管理员", Toast.LENGTH_SHORT).show();
