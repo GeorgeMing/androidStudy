@@ -11,12 +11,11 @@
         android:layout_weight="1">
         <com.makeramen.roundedimageview.RoundedImageView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="170dp"
             android:src="@drawable/logo"
             app:riv_border_color="#FFFFFF"
             app:riv_border_width="1dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
+
             app:riv_oval="true" />
 
     </LinearLayout>
@@ -80,9 +79,11 @@
             android:id="@+id/loginBtu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="30dp"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:background="@drawable/loginbtn_shape"
             android:text="登录"
             android:textColor="#ffffff"

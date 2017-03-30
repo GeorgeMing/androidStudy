@@ -10,7 +10,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
@@ -20,11 +19,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 /**
  * Created by zzm on 2017/3/10.
@@ -32,7 +33,7 @@ import java.net.URL;
 
 //服务器地址
 public class ServerAction {
-    static String ServerAddr = "http://192.168.249.77/";
+    static String ServerAddr = "http://zzmyun.space/";
 }
 
 //注册方法
@@ -87,6 +88,7 @@ class DataBaseController{
         // 创建ContentValues对象
 
         sqLiteDatabase.insert("user", null, values);
+        databaseHelper.close();
     }
 
     public String readToken(){
@@ -99,6 +101,7 @@ class DataBaseController{
 
             token = cursor.getString(cursor.getColumnIndex("token"));
         }
+        databaseHelper.close();
         return token;
     }
 
@@ -162,8 +165,6 @@ class LoginService extends AsyncTask<String, Integer, String> {
             try{
                 JSONObject jsonObject = new JSONObject(String.valueOf(str));
                 String resStr = jsonObject.getString("status");
-
-
                 if(resStr.equals("scusses")){
                     String token = jsonObject.getString("token");
                     String idNumber = jsonObject.getString("idNumber");
@@ -210,8 +211,118 @@ class GetData extends AsyncTask<String, Void, String> {
         try{
             this.token = new DataBaseController(context).readToken();
             this.idNumber = new DataBaseController(context).readidNumber();
-            Log.d("#######token", token);
             URL url = new URL(ServerAction.ServerAddr+"tp/index.php/admin/Index/getInfo?idNumber="+idNumber+"&token="+token);
+            httpURLConnection = (HttpURLConnection)url.openConnection();
+            if(httpURLConnection.getResponseCode() == 200){
+                InputStream is = httpURLConnection.getInputStream();
+                byte[] buffer = new byte[1024];
+                String str = "";
+                while(is.read(buffer)!=-1){
+                    str += new String(buffer);
+                    buffer = new byte[1024];
+                }
+
+                return str;
+            }
+        }catch (Exception e){
+            return null;
+        }
+        return null;
+    }
+
+    @Override
+    protected void onPostExecute(String str) {
+        super.onPostExecute(str);
+        if(str!=null){
+            try{
+                JSONObject jsonObject = new JSONObject(String.valueOf(str));
+                String student_name = jsonObject.getString("student_name");
+                String student_college = jsonObject.getString("student_college");
+                String student_specialty = jsonObject.getString("student_specialty");
+                String student_grade = jsonObject.getString("student_grade");
+                String student_class = jsonObject.getString("student_class");
+                String student_number = jsonObject.getString("student_number");
+                TextView nameText = (TextView)view.findViewById(R.id.info1);
+                TextView collegeText = (TextView)view.findViewById(R.id.info2);
+                TextView specialtyText = (TextView)view.findViewById(R.id.info3);
+                TextView gradeText = (TextView)view.findViewById(R.id.info4);
+                TextView classnumText = (TextView)view.findViewById(R.id.info5);
+                TextView numberText = (TextView)view.findViewById(R.id.info6);
+                nameText.setText(student_name);
+                collegeText.setText(student_college);
+                specialtyText.setText(student_specialty);
+                gradeText.setText(student_grade);
+                classnumText.setText(student_class);
+                numberText.setText(student_number);
+
+            }catch (Exception e){
+                try{
+                    JSONObject jsonObject = new JSONObject(String.valueOf(str));
+                    String teacher_name = jsonObject.getString("teacher_name");
+                    String teacher_college = jsonObject.getString("teacher_college");
+                    String teacher_position = jsonObject.getString("teacher_position");
+                    String teacher_title = jsonObject.getString("teacher_title");
+                    String teacher_degree = jsonObject.getString("teacher_degree");
+                    String teacher_number = jsonObject.getString("teacher_number");
+
+                    TextView text3 = (TextView)view.findViewById(R.id.text3);
+                    TextView text4 = (TextView)view.findViewById(R.id.text4);
+                    TextView text5 = (TextView)view.findViewById(R.id.text5);
+                    TextView text6 = (TextView)view.findViewById(R.id.text6);
+                    TextView nameText = (TextView)view.findViewById(R.id.info1);
+                    TextView collegeText = (TextView)view.findViewById(R.id.info2);
+                    TextView positionText = (TextView)view.findViewById(R.id.info3);
+                    TextView titleText = (TextView)view.findViewById(R.id.info4);
+                    TextView degreeText = (TextView)view.findViewById(R.id.info5);
+                    TextView numberText = (TextView)view.findViewById(R.id.info6);
+                    com.makeramen.roundedimageview.RoundedImageView touxiang = (com.makeramen.roundedimageview.RoundedImageView)view.findViewById(R.id.touxiang);
+                    touxiang.setImageResource(R.drawable.teacher);
+                    nameText.setText(teacher_name);collegeText.setText(teacher_college);
+                    text3.setText("职位");positionText.setText(teacher_position);
+                    text4.setText("职称");titleText.setText(teacher_title);
+                    text5.setText("学历");degreeText.setText(teacher_degree);
+                    text6.setText("工号");numberText.setText(teacher_number);
+                }catch(Exception es){
+                    try{
+                        JSONObject jsonObject = new JSONObject(String.valueOf(str));
+                        String info = jsonObject.getString("content");
+                        if(info.equals("tokenError")){
+                            Toast.makeText(context, "未登录", Toast.LENGTH_SHORT);
+                            Intent intent = new Intent(context, LoginActivity.class);
+                            context.startActivity(intent);
+                        }
+                    }catch (Exception e1){
+                        System.out.println(e1);
+                    }
+
+                }
+            }
+        }else{
+            Toast.makeText(context, "服务器错误", Toast.LENGTH_SHORT).show();
+
+        }
+    }
+}
+
+
+//**************************View3拿作业信息*****************************//
+class GetHomeworkData extends AsyncTask<String, Void, String>{
+    private Context context;
+    private View view;
+    private String token = null,idNumber = null;
+
+    public GetHomeworkData(Context context, View view){
+        this.context = context;
+        this.view  = view;
+    }
+    @Override
+    protected String doInBackground(String... strings) {
+        HttpURLConnection httpURLConnection;
+        try{
+            this.token = new DataBaseController(context).readToken();
+            this.idNumber = new DataBaseController(context).readidNumber();
+            URL url = new URL(ServerAction.ServerAddr+"tp/index.php/admin/Index/showhomework?idNumber="+idNumber+"&token="+token);
+            Log.d("url", ServerAction.ServerAddr+"tp/index.php/admin/Index/showhomework?idNumber="+idNumber+"&token="+token);
             httpURLConnection = (HttpURLConnection)url.openConnection();
             if(httpURLConnection.getResponseCode() == 200){
                 InputStream is = httpURLConnection.getInputStream();
@@ -228,96 +339,38 @@ class GetData extends AsyncTask<String, Void, String> {
             return null;
         }
         return null;
-
     }
 
     @Override
     protected void onPostExecute(String str) {
         super.onPostExecute(str);
-        if(str!=null){
-            try{
-                JSONObject jsonObject = new JSONObject(String.valueOf(str));
-                String student_name = jsonObject.getString("student_name");
-                String student_college = jsonObject.getString("student_college");
-                String student_specialty = jsonObject.getString("student_specialty");
-                String student_grade = jsonObject.getString("student_grade");
-                String student_class = jsonObject.getString("student_class");
-                String student_number = jsonObject.getString("student_number");
-                TextView nameText = (TextView)view.findViewById(R.id.name);
-                TextView collegeText = (TextView)view.findViewById(R.id.college);
-                TextView specialtyText = (TextView)view.findViewById(R.id.specialty);
-                TextView gradeText = (TextView)view.findViewById(R.id.grade);
-                TextView classnumText = (TextView)view.findViewById(R.id.classnum);
-                TextView numberText = (TextView)view.findViewById(R.id.number);
-                nameText.setText(student_name);
-                collegeText.setText(student_college);
-                specialtyText.setText(student_specialty);
-                gradeText.setText(student_grade);
-                classnumText.setText(student_class);
-                numberText.setText(student_number);
 
-            }catch (Exception e){
-                Toast.makeText(context, "未登录", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(context,LoginActivity.class);
-                context.startActivity(intent);
-            }
+        ArrayList<String> course_names = new ArrayList<String>();
+        ArrayList<String> homework_contents = new ArrayList<String>();
+        ArrayList<String> homework_endtimes = new ArrayList<String>();
+        if(str!=null) {
+            try {
+                JSONArray jsonArray = new JSONArray(str);
+                for(int i = 0; i < jsonArray.length(); i++){
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject = jsonArray.getJSONObject(i);
+                    homework_contents.add(jsonObject.getString("homework_content"));
+                    homework_endtimes.add(jsonObject.getString("homework_endtime"));
+                    course_names.add(jsonObject.getString("course_name"));
+                    Log.d("test",i+"");
+                    ListView list = (ListView)view.findViewById(R.id.view3list);
+                    HomeworkAdapter adapter = new HomeworkAdapter(context, course_names, homework_contents, homework_endtimes, course_names.size());
+                    list.setAdapter(adapter);
+                }
+            } catch (Exception e1){
+                    System.out.println(e1);
 
+                }
+        }else{
+            Toast.makeText(context, "服务器错误", Toast.LENGTH_SHORT).show();
         }
-    }
-}
 
 
-//**************************View3拿作业信息*****************************//
-class GetHomeworkData extends AsyncTask<String, Void, String>{
-    Context context;
-    View view;
-
-    public GetHomeworkData(Context context, View view){
-        this.context = context;
-        this.view  = view;
-    }
-    @Override
-    protected String doInBackground(String... strings) {
-        return null;
-    }
-
-    @Override
-    protected void onPostExecute(String str) {
-        super.onPostExecute(str);
-        ListView list = (ListView)view.findViewById(R.id.view3list);
-        BaseAdapter adapter = new BaseAdapter() {
-            @Override
-            public int getCount() {
-                return 10;
-            }
-
-            @Override
-            public Object getItem(int i) {
-                return null;
-            }
-
-            @Override
-            public long getItemId(int i) {
-                return i;
-            }
-
-            @Override
-            public View getView(int i, View view, ViewGroup viewGroup) {
-                LinearLayout linearLayout = new LinearLayout(context);
-                linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-                Button bn = new Button(context);
-                bn.setText("课程：C语言\n内容：1.求水仙花数 2.最小公倍数\n截止日期：2017-5-24");
-                bn.setTextColor(0xffffffff);
-                bn.setTextSize(25);
-                bn.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-                bn.setBackgroundResource(MainActivity.shap[i%5]);
-
-                linearLayout.addView(bn);
-                return linearLayout;
-            }
-        };
-        list.setAdapter(adapter);
     }
 }
 

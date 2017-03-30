@@ -1,6 +1,7 @@
 package com.example.zzm.apptest;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -72,6 +73,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         viewList.add(view3);
         viewList.add(view4);
 
+        Button loginoutbtn = (Button)view1.findViewById(R.id.loginout);
+        loginoutbtn.setOnClickListener(new View.OnClickListener() {//注销登录
+            @Override
+            public void onClick(View view) {
+                DataBaseController db = new DataBaseController(MainActivity.this);
+                db.delectData();
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                MainActivity.this.startActivity(intent);
+            }
+        });
+
+        Button changePassBtn = (Button)view1.findViewById(R.id.changePass);
+        changePassBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
         clearWebViewCache();
 
 
@@ -114,10 +134,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         dataLayout.setOnClickListener(this);
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(this);
+
+        String token = null;
         DatabaseHelper databaseHelper = new DatabaseHelper(MainActivity.this, "user_db");
         SQLiteDatabase sqLiteDatabase = databaseHelper.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.query("user", new String[] { "id", "idNumber","token" }, "id=?", new String[] { "1" }, null, null, null);
+        while (cursor.moveToNext()) {
+            token = cursor.getString(cursor.getColumnIndex("token"));
+        }
+        databaseHelper.close();
+        if(token != null) showView1();
+        else{
+            Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            this.startActivity(intent);
+        }
 
-        showView1();
     }
 
 
@@ -237,18 +269,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //view1显示函数
     public void showView1() {
-        Button loginoutbtn = (Button)view1.findViewById(R.id.loginout);
-        loginoutbtn.setOnClickListener(new View.OnClickListener() {//注销登录
-            @Override
-            public void onClick(View view) {
-                DataBaseController db = new DataBaseController(MainActivity.this);
-                db.delectData();
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                MainActivity.this.startActivity(intent);
-            }
-        });
         GetData gd = new GetData(MainActivity.this, getWindow().getDecorView());
         gd.execute("");
+
     }
 
     public void showView2() {
@@ -282,5 +305,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onResume() {
         super.onResume();
         clearWebViewCache();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        finish();
     }
 }

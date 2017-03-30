@@ -23,6 +23,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>
             <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/touxiang"
                 android:layout_width="wrap_content"
                 android:layout_height="80dp"
                 android:src="@drawable/student"
@@ -41,16 +42,19 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_weight="1">
-        <View android:layout_width="match_parent"
+        <View android:id="@+id/line1"
+            android:layout_width="match_parent"
             android:layout_height="1dip"
             android:background="#FF909090"
             android:layout_marginTop="10dip" />
 
         <RelativeLayout
+            android:id="@+id/layout1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1">
             <TextView
+                android:id="@+id/text1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -59,7 +63,7 @@
                 android:text="姓名"
                 android:layout_weight="1"/>
             <TextView
-                android:id="@+id/name"
+                android:id="@+id/info1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -70,19 +74,22 @@
 
         </RelativeLayout>
 
-        <View android:layout_width="match_parent"
+        <View android:id="@+id/line2"
+            android:layout_width="match_parent"
             android:layout_height="1dip"
             android:background="#FF909090"
             android:layout_marginTop="10dip" />
 
 
-        </LinearLayout>
+
 
         <RelativeLayout
+            android:id="@+id/layout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1">
             <TextView
+                android:id="@+id/text2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -92,7 +99,7 @@
                 android:layout_weight="1"/>
 
             <TextView
-                android:id="@+id/college"
+                android:id="@+id/info2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -103,20 +110,21 @@
 
         </RelativeLayout>
 
-        <View android:layout_width="match_parent"
+        <View android:id="@+id/line3"
+            android:layout_width="match_parent"
             android:layout_height="1dip"
             android:background="#FF909090"
             android:layout_marginTop="10dip" />
 
         <RelativeLayout
+            android:id="@+id/layout3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-
             android:textSize="20dp"
             android:layout_weight="1">
             <TextView
-
+                android:id="@+id/text3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -126,7 +134,7 @@
                 android:layout_weight="1"/>
 
             <TextView
-                android:id="@+id/specialty"
+                android:id="@+id/info3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -137,16 +145,19 @@
 
         </RelativeLayout>
 
-        <View android:layout_width="match_parent"
+        <View android:id="@+id/line4"
+            android:layout_width="match_parent"
             android:layout_height="1dip"
             android:background="#FF909090"
             android:layout_marginTop="10dip" />
 
         <RelativeLayout
+            android:id="@+id/layout4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1">
             <TextView
+                android:id="@+id/text4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -156,7 +167,7 @@
                 android:layout_weight="1"/>
 
             <TextView
-                android:id="@+id/grade"
+                android:id="@+id/info4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -167,16 +178,19 @@
 
         </RelativeLayout>
 
-        <View android:layout_width="match_parent"
+        <View android:id="@+id/line5"
+            android:layout_width="match_parent"
             android:layout_height="1dip"
             android:background="#FF909090"
             android:layout_marginTop="10dip" />
 
         <RelativeLayout
+            android:id="@+id/layout5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1">
             <TextView
+                android:id="@+id/text5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -186,7 +200,7 @@
                 android:layout_weight="1"/>
 
             <TextView
-                android:id="@+id/classnum"
+                android:id="@+id/info5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -197,16 +211,20 @@
 
         </RelativeLayout>
 
-        <View android:layout_width="match_parent"
+        <View
+            android:id="@+id/line6"
+            android:layout_width="match_parent"
             android:layout_height="1dip"
             android:background="#FF909090"
             android:layout_marginTop="10dip" />
 
         <RelativeLayout
+            android:id="@+id/layout6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1">
             <TextView
+                android:id="@+id/text6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -216,7 +234,7 @@
                 android:layout_weight="1"/>
 
             <TextView
-                android:id="@+id/number"
+                android:id="@+id/info6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -235,6 +253,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <Button
+                android:id="@+id/changePass"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/gaimima"
@@ -256,7 +275,6 @@
                 android:layout_weight="1"/>
         </LinearLayout>
 
-
-
+    </LinearLayout>
 
 </LinearLayout>
