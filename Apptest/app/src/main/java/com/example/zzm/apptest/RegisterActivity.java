@@ -13,12 +13,13 @@ import android.widget.Button;
 public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_register);
         Button registerbtn = (Button) findViewById(R.id.registerBtn);
         registerbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RegisterService RS = new RegisterService();
-                RS.execute("");
+//                RegisterService RS = new RegisterService();
+//                RS.execute("");
             }
         });
 
