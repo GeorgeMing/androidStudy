@@ -4,28 +4,25 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DataSetObserver;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by zzm on 2017/3/10.
@@ -33,20 +30,60 @@ import java.util.ArrayList;
 
 //服务器地址
 public class ServerAction {
-    static String ServerAddr = "http://zzmyun.space/";
+    static String ServerAddr = "http://192.168.249.77/";
+    static String DownloadServerAddr = "http://112.74.30.152/";
 }
 
 //注册方法
 class RegisterService extends AsyncTask<String, Integer, String> {
+    Context context;
+    public RegisterService(Context context){
+        this.context = context;
+    }
 
     @Override
     protected String doInBackground(String... strings) {
+        HttpURLConnection httpURLConnection;
+        try{
+            URL url = new URL(strings[0]);
+            httpURLConnection = (HttpURLConnection)url.openConnection();
+            if(httpURLConnection.getResponseCode() == 200){
+                InputStream is = httpURLConnection.getInputStream();
+                byte[] buffer = new byte[1024];
+                String str = "";
+                while(is.read(buffer)!=-1){
+                    str += new String(buffer);
+                    buffer = new byte[1024];
+                }
+                return str;
+            }
+        }catch (Exception e){
+            publishProgress(-1);
+            return null;
+        }
         return null;
     }
 
     @Override
     protected void onPostExecute(String str) {
         super.onPostExecute(str);
+        if(str!=null){
+            try{
+                JSONObject jsonObject = new JSONObject(String.valueOf(str));
+                String resStr = jsonObject.getString("status");
+                if(resStr.equals("scusses")){
+                    Toast.makeText(context, "注册成功", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context, LoginActivity.class);
+                    context.startActivity(intent);
+                }else{
+                    Toast.makeText(context, "服务器错误", Toast.LENGTH_SHORT).show();
+                }
+            }catch (Exception e){
+                Toast.makeText(context, "服务器错误", Toast.LENGTH_SHORT).show();
+            }
+        }else{
+            Toast.makeText(context, "服务器错误", Toast.LENGTH_SHORT).show();
+        }
     }
 }
 
@@ -212,6 +249,7 @@ class GetData extends AsyncTask<String, Void, String> {
             this.token = new DataBaseController(context).readToken();
             this.idNumber = new DataBaseController(context).readidNumber();
             URL url = new URL(ServerAction.ServerAddr+"tp/index.php/admin/Index/getInfo?idNumber="+idNumber+"&token="+token);
+            System.out.println(ServerAction.ServerAddr+"tp/index.php/admin/Index/getInfo?idNumber="+idNumber+"&token="+token);
             httpURLConnection = (HttpURLConnection)url.openConnection();
             if(httpURLConnection.getResponseCode() == 200){
                 InputStream is = httpURLConnection.getInputStream();
@@ -378,7 +416,7 @@ class GetHomeworkData extends AsyncTask<String, Void, String>{
 class GetFileData extends AsyncTask<String, Void, String> {
     Context context;
     View view;
-
+    private String token, idNumber;
     public GetFileData(Context context, View view){
         this.context = context;
         this.view = view;
@@ -386,145 +424,64 @@ class GetFileData extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... strings) {
+        HttpURLConnection httpURLConnection;
+        try{
+            this.token = new DataBaseController(context).readToken();
+            this.idNumber = new DataBaseController(context).readidNumber();
+            URL url = new URL(ServerAction.ServerAddr+"tp/index.php/admin/Index/showdownload?idNumber="+idNumber+"&token="+token);
+            httpURLConnection = (HttpURLConnection)url.openConnection();
+            if(httpURLConnection.getResponseCode() == 200){
+                InputStream is = httpURLConnection.getInputStream();
+                byte[] buffer = new byte[1024];
+                String str = "";
+                while(is.read(buffer)!=-1){
+                    str += new String(buffer);
+                    buffer = new byte[1024];
+                }
+
+                return str;
+            }
+        }catch (Exception e){
+            return null;
+        }
         return null;
     }
 
     @Override
     protected void onPostExecute(String str) {
+        ArrayList<String> file_types = new ArrayList<String>();
+        ArrayList<Map<String,String>> file_names = new ArrayList<Map<String, String>>();
         super.onPostExecute(str);
-        ExpandableListAdapter adapter = new ExpandableListAdapter() {
-
-            private String[] fileTypes = new String[]{"课程资料","课程作业","竞赛资料","毕业设计","课程设计","答辩记录","实习报告"};
-            private String[][] files = new String[][]{
-                    {"期末复习.docx","期中复习.pdf","C语言基础.pdf"},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {}
-            };
-
-            @Override
-            public void registerDataSetObserver(DataSetObserver dataSetObserver) {
-
+        try {
+            JSONArray jsonArray = new JSONArray(String.valueOf(str));
+            for(int i = 0; i < jsonArray.length(); i++){
+                JSONObject jsonObject = new JSONObject();
+                jsonObject = jsonArray.getJSONObject(i);
+                try{
+                    String file_type, file_name, file_src;
+                    Map<String, String> map = new HashMap<String, String>();
+                    file_type = jsonObject.getString("file_type");
+                    file_name = jsonObject.getString("file_name");
+                    file_src = jsonObject.getString("file_path");
+                    map.put("file_type",file_type);
+                    map.put("file_name", file_name);
+                    map.put("file_path", file_src);
+                    file_names.add(map);
+                }catch(Exception e){
+                    String type_name;
+                    type_name = jsonObject.getString("file_type");
+                    file_types.add(type_name);
+                }
             }
+            Log.d("types", file_types.toString());
+            Log.d("names", file_names.toString());
+            ExpandableListView elv = (ExpandableListView)view.findViewById(R.id.fileListVIew);
+            FileAdapter fa = new FileAdapter(context, file_types, file_names);
+            elv.setAdapter(fa);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-            @Override
-            public void unregisterDataSetObserver(DataSetObserver dataSetObserver) {
-
-            }
-
-            @Override
-            public int getGroupCount() {
-                return fileTypes.length;
-            }
-
-            @Override
-            public int getChildrenCount(int i) {
-                return files[i].length;
-            }
-
-            @Override
-            public Object getGroup(int i) {
-                return fileTypes[i];
-            }
-
-            @Override
-            public Object getChild(int i, int i1) {
-                return files[i][i1];
-            }
-
-            @Override
-            public long getGroupId(int i) {
-                return i;
-            }
-
-            @Override
-            public long getChildId(int i, int i1) {
-                return i1;
-            }
-
-            @Override
-            public boolean hasStableIds() {
-                return true;
-            }
-
-            //组选项外观
-            @Override
-            public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
-                LinearLayout ll = new LinearLayout(context);
-                ll.setOrientation(LinearLayout.HORIZONTAL);
-                TextView groupText = new TextView(context);
-                groupText.setText(fileTypes[i]);
-                groupText.setTextSize(35);
-                groupText.setPadding(25,10,10,10);
-                ll.addView(groupText);
-                return ll;
-            }
-
-            //子选项的外观
-            @Override
-            public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
-                RelativeLayout cl = new RelativeLayout(context);
-                cl.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                TextView fileTextView = new TextView(context);
-                fileTextView.setId(R.id.my_view);
-                Button downloadBtn = new Button(context);
-                downloadBtn.setBackgroundResource(R.drawable.shape2);
-                downloadBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Toast.makeText(context, "test", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                fileTextView.setTextSize(25);
-                fileTextView.setText(getChild(i,i1).toString());
-                downloadBtn.setText("下载");
-                cl.addView(fileTextView);
-                cl.addView(downloadBtn);
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)downloadBtn.getLayoutParams();
-                params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                return cl;
-            }
-
-            @Override
-            public boolean isChildSelectable(int i, int i1) {
-                return true;
-            }
-
-            @Override
-            public boolean areAllItemsEnabled() {
-                return false;
-            }
-
-            @Override
-            public boolean isEmpty() {
-                return false;
-            }
-
-            @Override
-            public void onGroupExpanded(int i) {
-
-            }
-
-            @Override
-            public void onGroupCollapsed(int i) {
-
-            }
-
-            @Override
-            public long getCombinedChildId(long l, long l1) {
-                return 0;
-            }
-
-            @Override
-            public long getCombinedGroupId(long l) {
-                return 0;
-            }
-        };
-        ExpandableListView expandableListView = (ExpandableListView)view.findViewById(R.id.fileListVIew);
-        expandableListView.setAdapter(adapter);
     }
 }
 

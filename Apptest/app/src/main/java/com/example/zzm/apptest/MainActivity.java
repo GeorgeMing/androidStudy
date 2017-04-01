@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void showView2() {
         //显示课表
         WebView webView = (WebView)view2.findViewById(R.id.webview);
-        webView.loadUrl("http://zzmyun.space/Syllabus");
+        webView.loadUrl(ServerAction.ServerAddr+"tp/index.php/admin/index/kebiao?idNumber="+new DataBaseController(MainActivity.this).readidNumber()+"&token="+new DataBaseController(MainActivity.this).readToken());
         webView.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
