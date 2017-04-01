@@ -30,7 +30,7 @@ import java.util.Map;
 
 //服务器地址
 public class ServerAction {
-    static String ServerAddr = "http://192.168.249.77/";
+    static String ServerAddr = "http://zzmyun.space/";
     static String DownloadServerAddr = "http://112.74.30.152/";
 }
 
@@ -229,6 +229,67 @@ class LoginService extends AsyncTask<String, Integer, String> {
     protected void onProgressUpdate(Integer... values) {
         super.onProgressUpdate(values);
 
+    }
+}
+
+//修改密码方法
+class changePassword extends AsyncTask<String, Void, String>{
+    private Context context;
+    private String token, idNumber;
+    public changePassword(Context context){
+        this.context = context;
+    }
+
+    @Override
+    protected String doInBackground(String... strings) {
+        HttpURLConnection httpURLConnection;
+        try{
+            this.token = new DataBaseController(context).readToken();
+            this.idNumber = new DataBaseController(context).readidNumber();
+            URL url = new URL(ServerAction.ServerAddr+"tp/index.php/admin/Index/changepassword?idNumber="+idNumber+"&token="+token+"&oldpassword="+strings[0]
+                    +"&newpassword="+strings[1]+"&newpassword2="+strings[2]);
+            System.out.println(ServerAction.ServerAddr+"tp/index.php/admin/Index/changepassword?idNumber="+idNumber+"&token="+token+"&oldpassword="+strings[0]
+                    +"&newpassword="+strings[1]+"&newpassword2="+strings[2]);
+            httpURLConnection = (HttpURLConnection)url.openConnection();
+            if(httpURLConnection.getResponseCode() == 200){
+                InputStream is = httpURLConnection.getInputStream();
+                byte[] buffer = new byte[1024];
+                String str = "";
+                while(is.read(buffer)!=-1){
+                    str += new String(buffer);
+                    buffer = new byte[1024];
+                }
+
+                return str;
+            }
+        }catch (Exception e){
+            return null;
+        }
+        return null;
+    }
+
+    @Override
+    protected void onPostExecute(String str) {
+        super.onPostExecute(str);
+        if(str!=null){
+            try{
+                JSONObject jsonObject = new JSONObject(String.valueOf(str));
+                String resStr = jsonObject.getString("status");
+                if(resStr.equals("scusses")){
+                    Toast.makeText(context, "修改成功", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context, MainActivity.class);
+                    context.startActivity(intent);
+                }
+                if(resStr.equals("error")){
+                    Toast.makeText(context, "旧密码错误", Toast.LENGTH_SHORT).show();
+                }
+            }catch (Exception e){
+                Toast.makeText(context, "服务器错误", Toast.LENGTH_SHORT).show();
+            }
+        }else{
+            Toast.makeText(context, "服务器错误", Toast.LENGTH_SHORT).show();
+
+        }
     }
 }
 
