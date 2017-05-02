@@ -1,7 +1,11 @@
 package com.example.zzm.apptest;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.DataSetObserver;
+import android.text.TextUtils;
+import android.text.method.ScrollingMovementMethod;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
@@ -101,8 +105,10 @@ public class FileAdapter extends BaseExpandableListAdapter{
         ll.setOrientation(LinearLayout.HORIZONTAL);
         TextView groupText = new TextView(context);
         groupText.setText(file_types.get(i));
-        groupText.setTextSize(35);
-        groupText.setPadding(25,10,10,10);
+        groupText.setTextSize(25);
+        ll.setBackgroundColor(0xFFC6E2FF);
+        groupText.setPadding(25,20,20,20);
+        groupText.setEllipsize(TextUtils.TruncateAt.END);
         ll.addView(groupText);
         return ll;
     }
@@ -110,6 +116,9 @@ public class FileAdapter extends BaseExpandableListAdapter{
     //子选项的外观
     @Override
     public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
+        Resources resources = context.getResources();
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        int screenwidth = dm.widthPixels;
         RelativeLayout cl = new RelativeLayout(context);
         cl.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         TextView fileTextView = new TextView(context);
@@ -123,16 +132,23 @@ public class FileAdapter extends BaseExpandableListAdapter{
             }
         });
         fileTextView.setTextSize(25);
+        fileTextView.setPadding(45,10,10,10);
         String btntext = getChild(i,i1).toString();
         if(!btntext.equals("")) {
             fileTextView.setText(btntext);
+            fileTextView.setMovementMethod(ScrollingMovementMethod.getInstance());
+            fileTextView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+            fileTextView.setSingleLine(true);
+            fileTextView.setMarqueeRepeatLimit(6);
             downloadBtn.setText("下载");
             downButton downbutton = new downButton((String)getURL(i,i1), btntext, context);
             downloadBtn.setOnClickListener(downbutton);
             cl.addView(fileTextView);
             cl.addView(downloadBtn);
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) downloadBtn.getLayoutParams();
+            params.height = 120;
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            cl.setLayoutParams(params);
         }
         return cl;
     }
@@ -190,3 +206,4 @@ class downButton implements View.OnClickListener{
         DataDownload dd = new DataDownload(url, file_name, context);
     }
 }
+

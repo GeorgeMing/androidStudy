@@ -234,25 +234,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 personalText.setTextColor(Color.parseColor("#000000"));
                 personalImg.setImageResource(R.drawable.ic_account_circle_black);
                 viewPager.setCurrentItem(0);
-                showView1();
+//                showView1();
                 break;
             case R.id.scheduleLayout:
                 scheduleText.setTextColor(Color.parseColor("#000000"));
                 scheduleImg.setImageResource(R.drawable.ic_account_balance_black);
                 viewPager.setCurrentItem(1);
-                showView2();
+//                showView2();
                 break;
             case R.id.homeworkLayout:
                 homeworkText.setTextColor(Color.parseColor("#000000"));
                 homeworkImg.setImageResource(R.drawable.ic_tab_black);
                 viewPager.setCurrentItem(2);
-                showView3();
+//                showView3();
                 break;
             case R.id.dataLayout:
                 dataText.setTextColor(Color.parseColor("#000000"));
                 dataImg.setImageResource(R.drawable.ic_dns_black);
                 viewPager.setCurrentItem(3);
-                showView4();
+//                showView4();
                 break;
 
         }
@@ -278,6 +278,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void showView2() {
         //显示课表
         WebView webView = (WebView)view2.findViewById(R.id.webview);
+        webView.getSettings().setJavaScriptEnabled(true);
         webView.loadUrl(ServerAction.ServerAddr+"tp/index.php/admin/index/keBiao?idNumber="+new DataBaseController(MainActivity.this).readidNumber()+"&token="+new DataBaseController(MainActivity.this).readToken());
         webView.setWebViewClient(new WebViewClient(){
             @Override
