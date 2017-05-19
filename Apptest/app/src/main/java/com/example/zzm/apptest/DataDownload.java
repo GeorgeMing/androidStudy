@@ -5,13 +5,28 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
 
+import java.net.URLEncoder;
+
 /**
  * Created by zzm on 2017/3/10.
  */
 
 public class DataDownload {
     public DataDownload(String url, String file_name, Context context){
-        Uri uri = Uri.parse(ServerAction.DownloadServerAddr+url);
+        String filename = "";
+        Uri uri;
+        try{
+            filename = URLEncoder.encode(file_name,"utf-8");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        String idNumber = new DataBaseController(context).readidNumber();
+        if(idNumber.length() < 12){
+            uri = Uri.parse(ServerAction.DownloadServerAddr+"Administrator/teacher/teaDown.ashx?name="+filename);
+        }else{
+            uri = Uri.parse(ServerAction.DownloadServerAddr+"Administrator/stu/stuDown.ashx?name="+filename);
+        }
+
         // uri 是你的下载地址，可以使用Uri.parse("http://")包装成Uri对象
         DownloadManager.Request req = new DownloadManager.Request(uri);
 

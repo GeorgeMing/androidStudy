@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
         public void run(){
             try {
-                socket = new Socket("192.168.12.1", 8082);
+                socket = new Socket("192.168.199.227", 8082);
                 out = new PrintWriter(new BufferedWriter(
                         new OutputStreamWriter(socket.getOutputStream())), true);
                 //建立消息循环的步骤
